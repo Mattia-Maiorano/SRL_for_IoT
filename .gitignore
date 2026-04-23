@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+
+# Data and Models (The heavy stuff)
+data/
+outputs/
+*.zip
+*.hrc
+huric/
+
+# Mac system files
+.DS_Store
+
+# Logs and Checkpoints
+runs/
+*.log

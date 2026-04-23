@@ -1,0 +1,12 @@
+torch
+transformers
+datasets
+nltk
+evaluate
+accelerate
+seqeval
+pyyaml
+protobuf
+matplotlib
+bitsandbytes
+optuna
