@@ -8,7 +8,7 @@ cd "$SCRIPT_DIR"
 ZIP_NAME="srl_iot_outputs.zip"
 OUTPUT_DIR="outputs"
 GITIGNORE_FILE=".gitignore"
-TARGET_DIRS=("outputs/baseline" "outputs/best_student" "outputs/iot_ready_4bit")
+TARGET_DIRS=("outputs/baseline" "outputs/best_student" "outputs/sweep_trials/best_student" "outputs/iot_ready_4bit")
 
 if [ ! -d "$OUTPUT_DIR" ]; then
   echo "Error: '$OUTPUT_DIR' directory not found. Please generate outputs before syncing."

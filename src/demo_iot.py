@@ -21,8 +21,8 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-MODEL_PATH = "outputs/iot_ready_4bit"
-FALLBACK_PATH = "outputs/sweep_trials/best_student"
+MODEL_PATH = os.environ.get("SRL_MODEL_PATH", "outputs/iot_ready_4bit")
+FALLBACK_PATH = os.environ.get("SRL_FALLBACK_PATH", "outputs/sweep_trials/best_student")
 AUX_VERBS = {
     "be",
     "am",
@@ -79,22 +79,30 @@ def get_device() -> torch.device:
 
 def load_model() -> Tuple[AutoTokenizer, AutoModelForTokenClassification, torch.device, str]:
     device = get_device()
-    if os.path.isdir(MODEL_PATH):
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=True)
-        model = AutoModelForTokenClassification.from_pretrained(MODEL_PATH)
+    resolved_model_path = os.path.join(ROOT_DIR, MODEL_PATH)
+    resolved_fallback_path = os.path.join(ROOT_DIR, FALLBACK_PATH)
+
+    if os.path.isdir(resolved_model_path):
+        tokenizer = AutoTokenizer.from_pretrained(resolved_model_path, use_fast=True)
+        model = AutoModelForTokenClassification.from_pretrained(resolved_model_path)
         model.to(device)
         model.eval()
-        return tokenizer, model, device, MODEL_PATH
+        return tokenizer, model, device, resolved_model_path
 
-    if os.path.isdir(FALLBACK_PATH):
-        print(f"Teacher model not found at {MODEL_PATH}, falling back to {FALLBACK_PATH}.")
-        tokenizer = AutoTokenizer.from_pretrained(FALLBACK_PATH, use_fast=True)
-        model = AutoModelForTokenClassification.from_pretrained(FALLBACK_PATH)
+    if os.path.isdir(resolved_fallback_path):
+        print(f"Teacher model not found at {resolved_model_path}, falling back to {resolved_fallback_path}.")
+        tokenizer = AutoTokenizer.from_pretrained(resolved_fallback_path, use_fast=True)
+        model = AutoModelForTokenClassification.from_pretrained(resolved_fallback_path)
         model.to(device)
         model.eval()
-        return tokenizer, model, device, FALLBACK_PATH
+        return tokenizer, model, device, resolved_fallback_path
 
-    raise FileNotFoundError(f"No model directory found at {MODEL_PATH} or {FALLBACK_PATH}.")
+    raise FileNotFoundError(
+        "No model directory found. "
+        f"Checked: {resolved_model_path} and {resolved_fallback_path}. "
+        "If you extracted only src/, you must also provide a model directory or set SRL_MODEL_PATH. "
+        "Example: export SRL_MODEL_PATH=/content/SRL_for_IoT/outputs/baseline"
+    )
 
 
 def find_predicate(text_command: str) -> str:
