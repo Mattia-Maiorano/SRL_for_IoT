@@ -74,10 +74,18 @@ python src/demo_iot.py
 
 During demo execution, the script loads the teacher model from `outputs/baseline` by default and prints raw token-to-label mappings before producing final JSON output.
 
+## Analysis and Benchmarking Utilities
+
+The `src/analysis/` folder contains scripts for evaluating, comparing, and benchmarking models:
+
+- `src/analysis/eval_baseline.py` — Evaluates a baseline model checkpoint on the test dataset and prints a detailed classification report.
+- `src/analysis/compare_results.py` — Compares the evaluation results of the baseline and augmented models, producing the artifact `comparison_f1_top10.png` which charts the top 10 SRL argument F1 scores.
+- `src/analysis/benchmark_edge.py` — Benchmarks models (e.g. baseline, augmented, distilled, quantized) by measuring F1 score and latency, plotting the results to `accuracy_vs_latency_tradeoff.png`.
+- `src/analysis/iot_benchmark.py` — A comprehensive benchmarking utility to run single-inference metrics on trained models and save results in markdown format to `iot_benchmark_results.md`.
+
 ## Optional utilities
 
 - `bash sync_to_colab.sh` — creates a zip containing selected model checkpoints and automates Git staging/commit/push for Colab transfer.
-- `src/analysis/iot_benchmark.py` — benchmark script for comparing baseline, student, and quantized models on size/latency/F1.
 - `src/models/quantize_model.py` and `src/models/quantizer.py` — scripts for converting the student model to 4-bit quantized weights.
 
 ## Folder structure
